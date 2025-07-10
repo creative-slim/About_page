@@ -3,6 +3,10 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import { NodeToyMaterial, NodeToyTick } from "@nodetoy/react-nodetoy";
 import { data } from "./shaderData.ts";
 import { Planets } from "./Planets.jsx";
+import Env from "./Env.jsx";
+import GlowCore from "./GlowCore.jsx";
+import { Tunnel } from "./Core_values.jsx";
+
 
 export default function App() {
   return (
@@ -11,14 +15,19 @@ export default function App() {
       camera={{ fov: 45, near: 0.1, far: 1000, position: [0, 0, 2] }}
     >
       {/* <color attach="background" args={["#000000"]} /> */}
-      <directionalLight position={[-10, -10, -5]} intensity={0.5} />
-      <Planets />
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[-10, -10, -5]} intensity={1.5} />
+      {/* <Planets /> */}
+      <Env />
+      <GlowCore position={[0, 0, 0]} />
 
       <Stars />
 
       <NodeToyTick />
 
-      {/* <OrbitControls /> */}
+      <OrbitControls />
+
+      {/* <Tunnel /> */}
 
       {/* Add post-processing effects */}
       {/* <EffectComposer>
