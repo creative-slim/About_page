@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
-import { NodeToyMaterial, NodeToyTick } from "@nodetoy/react-nodetoy";
+// import { NodeToyMaterial, NodeToyTick } from "@nodetoy/react-nodetoy";
 import { data } from "./shaderData.ts";
 import { Planets } from "./Planets.jsx";
 import Env from "./Env.jsx";
@@ -23,11 +23,11 @@ export default function App() {
 
       <Stars />
 
-      <NodeToyTick />
+      {/* <NodeToyTick /> */}
 
       <OrbitControls />
 
-      {/* <Tunnel /> */}
+      <Tunnel />
 
       {/* Add post-processing effects */}
       {/* <EffectComposer>
