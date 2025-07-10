@@ -27,7 +27,7 @@ export default function App() {
 
       <OrbitControls />
 
-      {/* <Tunnel /> */}
+      <Tunnel />
 
       {/* Add post-processing effects */}
       {/* <EffectComposer>
