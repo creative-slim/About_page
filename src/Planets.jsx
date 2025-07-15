@@ -4,15 +4,16 @@ Command: npx gltfjsx@6.5.3 ./public/planets.glb --transform
 Files: ./public/planets.glb [332.27KB] > /Users/slim-cd/Documents/_Projects/__Creative Directors Website/website 2025/About_page/planets-transformed.glb [8.2KB] (98%)
 */
 
-import React, { useEffect, useRef, useMemo } from "react"; // Added useMemo
-import { useGLTF, useAnimations } from "@react-three/drei"; // Removed useCamera, Billboard (unless needed elsewhere)
-import { useFrame, useThree } from "@react-three/fiber"; // Added useThree
-import { NodeToyMaterial } from "@nodetoy/react-nodetoy"; // Removed NodeToyTick if not used elsewhere
-import * as THREE from "three";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import React, { useRef } from "react";
+import { useGLTF } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
+import {
+  Planet1Material,
+  Planet2Material,
+  Planet3Material,
+  Planet4Material,
+  Planet5Material,
+} from "./PlanetShaders";
 
 // Determine the model URL based on the environment
 const isDevelopment = import.meta.env.DEV;
@@ -31,123 +32,17 @@ export function Planets(props) {
   const sphere4Ref = useRef();
   const sphere0Ref = useRef();
 
+  const material1Ref = useRef();
+  const material2Ref = useRef();
+  const material3Ref = useRef();
+  const material4Ref = useRef();
+  const material5Ref = useRef();
+
   const { camera } = useThree(); // Get camera instance
-  const { nodes, materials, animations } = useGLTF(modelUrl);
-  const { actions } = useAnimations(animations, group);
-
-  // Wrap targets definition in useMemo for stable reference
-  // Use hardcoded positions again
-  const targets = useMemo(
-    () => [
-      { position: [-24.84, 0.49, -1.24], lookAtRef: sphere0Ref }, // Section 0 (Start)
-      { position: [-7.5, -3.0, 36.4], lookAtRef: sphere1Ref }, // Section 1
-      { position: [-13.94, 2.52, -40.52], lookAtRef: sphere2Ref }, // Section 2
-      { position: [13.45, -8.95, 7.77], lookAtRef: sphere3Ref }, // Section 3
-      { position: [32.89, -1.32, -9.56], lookAtRef: sphere4Ref }, // Section 4
-      // { position: [17.127, 0.025, -1.413], lookAtRef: sphere0Ref }, // Section 5 (End) - Keep commented if needed
-    ],
-    [] // Removed targetPositions dependency, now empty
-  );
-
-  useEffect(() => {
-    // Ensure all refs are current before creating the timeline
-    const allRefsReady = targets.every((target) => target.lookAtRef.current);
-    if (!allRefsReady) return;
-
-    // Create a target object for lookAt animation
-    const lookAtTarget = new THREE.Vector3();
-
-    // Dynamically calculate snap points based on the number of targets
-    // The number of scrollable sections/intervals is one less than the number of targets.
-    const numTargets = targets.length;
-    const numSections = numTargets > 1 ? numTargets - 1 : 1; // Avoid division by zero if only 1 target
-    const snapPoints = [];
-    for (let i = 0; i < numTargets; i++) {
-      // Calculate progress point for each target index
-      snapPoints.push(i / numSections);
-    }
-    // Example: 6 targets -> 5 sections -> snapPoints [0, 0.2, 0.4, 0.6, 0.8, 1]
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#about-page-wrapper", // The container element
-        start: "top top", // When the top of the trigger hits the top of the viewport
-        end: "bottom bottom", // When the bottom of the trigger hits the bottom of the viewport
-        scrub: 1, // Smooth scrubbing, takes 1 second to "catch up"
-        // Add snapping configuration
-        snap: {
-          snapTo: snapPoints, // Snap to the calculated progress points
-          duration: { min: 0.2, max: 0.5 }, // Duration of the snap animation
-          delay: 0.1, // Delay before snapping starts
-          ease: "power1.inOut", // Easing for the snap animation
-        },
-        // markers: true, // Uncomment for debugging
-      },
-    });
-
-    // Initial state (optional, but good for clarity)
-    const initialTarget = targets[0];
-    camera.position.set(...initialTarget.position);
-    if (initialTarget.lookAtRef.current) {
-      // Set initial lookAt target
-      lookAtTarget.copy(initialTarget.lookAtRef.current.position);
-      camera.lookAt(lookAtTarget);
-    }
-
-    // Add animations for each target section
-    targets.forEach((target, index) => {
-      if (index > 0) {
-        const lookAtPosition = target.lookAtRef.current.position;
-        const positionTweenDuration = 1; // Duration for position change
-        const lookAtTweenDuration = 1.5; // Make lookAt transition slightly longer (adjust as needed)
-
-        // Animate Camera Position
-        tl.to(
-          camera.position,
-          {
-            x: target.position[0],
-            y: target.position[1],
-            z: target.position[2],
-            duration: positionTweenDuration,
-            ease: "power1.inOut",
-            onUpdate: () => {
-              // Continuously look at the animating target during position change
-              camera.lookAt(lookAtTarget);
-            },
-          },
-          `section-${index}` // Start position tween at the section label
-        );
-
-        // Animate LookAt Target - Start slightly before or at the same time, but last longer
-        tl.to(
-          lookAtTarget,
-          {
-            x: lookAtPosition.x,
-            y: lookAtPosition.y,
-            z: lookAtPosition.z,
-            duration: lookAtTweenDuration, // Use the longer duration
-            ease: "power1.inOut", // Can use a different ease if desired
-            onUpdate: () => {
-              // Also update lookAt during the lookAt target tween itself
-              // (important if lookAt tween finishes after position tween)
-              camera.lookAt(lookAtTarget);
-            },
-          },
-          `section-${index}` // Start lookAt tween at the same time as position tween
-          // Or adjust timing slightly e.g. `section-${index}-=0.2` to start earlier
-        );
-      }
-    });
-
-    // Cleanup function to kill ScrollTrigger instance on component unmount
-    return () => {
-      tl.kill();
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
-  }, [camera, targets]); // Rerun effect if camera or targets change (targets won't usually change)
+  const { nodes, materials } = useGLTF(modelUrl);
 
   // Keep the billboard effect for spheres
-  useFrame(() => {
+  useFrame((state, delta) => {
     [sphere0Ref, sphere1Ref, sphere2Ref, sphere3Ref, sphere4Ref].forEach(
       (sphereRef) => {
         if (sphereRef.current) {
@@ -156,6 +51,18 @@ export function Planets(props) {
         }
       }
     );
+
+    [
+      material1Ref,
+      material2Ref,
+      material3Ref,
+      material4Ref,
+      material5Ref,
+    ].forEach((materialRef) => {
+      if (materialRef.current) {
+        materialRef.current.uTime += delta;
+      }
+    });
   });
 
   return (
@@ -170,9 +77,7 @@ export function Planets(props) {
           {/* Keep Meshes */}
           <mesh name="Sphere" ref={sphere0Ref} position={[-12.829, 0, -0.945]}>
             <sphereGeometry args={[1, 32, 32]} />
-            <NodeToyMaterial
-              url={"https://draft.nodetoy.co/beV8SRHx5ZPp5eg0"}
-            />
+            <planet1Material ref={material1Ref} />
           </mesh>
 
           <mesh
@@ -182,33 +87,27 @@ export function Planets(props) {
             scale={1.717}
           >
             <sphereGeometry args={[1, 32, 32]} />
-            <NodeToyMaterial
-              url={"https://draft.nodetoy.co/QHPJX5eJkOcTFYNq"}
-            />
+            <planet2Material ref={material2Ref} />
           </mesh>
 
           <mesh
-            name="Sphere002"
+            name="green_planet"
             ref={sphere2Ref}
             position={[3.078, -0.705, -9.599]}
             scale={1.717}
           >
             <sphereGeometry args={[1, 32, 32]} />
-            <NodeToyMaterial
-              url={"https://draft.nodetoy.co/5i2xH77aVCxRhJrQ"}
-            />
+            <planet3Material ref={material3Ref} />
           </mesh>
 
           <mesh
-            name="Sphere003"
+            name="yellow_planet"
             ref={sphere3Ref}
             position={[12.037, -5.171, 2.346]}
             scale={1.557}
           >
             <sphereGeometry args={[1, 32, 32]} />
-            <NodeToyMaterial
-              url={"https://draft.nodetoy.co/bklXTxUPcTXGeA11"}
-            />
+            <planet4Material ref={material4Ref} />
           </mesh>
 
           <mesh
@@ -218,9 +117,7 @@ export function Planets(props) {
             scale={1.121}
           >
             <sphereGeometry args={[1, 32, 32]} />
-            <NodeToyMaterial
-              url={"https://draft.nodetoy.co/EYvftsoE1G7vcigI"}
-            />
+            <planet5Material ref={material5Ref} />
           </mesh>
         </group>
       </group>

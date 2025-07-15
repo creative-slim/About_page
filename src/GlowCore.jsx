@@ -45,6 +45,7 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import SaturnRing from './SaturnRing';
+import InnerCore from './InnerCore';
 
 /**
  * Creates a custom GLSL shader for the glowing sphere effect
@@ -52,6 +53,10 @@ import SaturnRing from './SaturnRing';
  * @param {number} intensity - Glow intensity multiplier
  * @returns {Object} Shader configuration with uniforms, vertex and fragment shaders
  */
+
+const ROTATION_SPEED = 0.5;
+
+
 const getGlowShader = (color = "#4a90e2", intensity = 1.5) => {
   // Convert hex color to RGB
   const hex = color.replace('#', '');
@@ -67,12 +72,15 @@ const getGlowShader = (color = "#4a90e2", intensity = 1.5) => {
     },
     vertexShader: `
             varying vec3 vNormal;
-            varying vec3 vPosition;
+            varying vec3 vLocalPosition;
+            varying vec3 vViewPosition;
             
             void main() {
                 vNormal = normalize(normalMatrix * normal);
-                vPosition = position;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vLocalPosition = position;
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                vViewPosition = mvPosition.xyz;
+                gl_Position = projectionMatrix * mvPosition;
             }
         `,
     fragmentShader: `
@@ -80,11 +88,12 @@ const getGlowShader = (color = "#4a90e2", intensity = 1.5) => {
             uniform vec3 color;
             uniform float intensity;
             varying vec3 vNormal;
-            varying vec3 vPosition;
+            varying vec3 vLocalPosition;
+            varying vec3 vViewPosition;
             
             void main() {
                 // Calculate fresnel effect for edge glow
-                vec3 viewDirection = normalize(cameraPosition - vPosition);
+                vec3 viewDirection = normalize(-vViewPosition);
                 float fresnel = pow(1.0 - abs(dot(vNormal, viewDirection)), 2.0);
                 
                 // Add pulsing animation
@@ -94,7 +103,7 @@ const getGlowShader = (color = "#4a90e2", intensity = 1.5) => {
                 float glow = fresnel * pulse * intensity;
                 
                 // Create gradient from center to edge
-                float distance = length(vPosition);
+                float distance = length(vLocalPosition);
                 float centerGlow = 1.0 - smoothstep(0.0, 0.5, distance);
                 
                 // Final color with alpha
@@ -132,9 +141,15 @@ export default function GlowCore({
   const RING_SCALE = [1, 1, 1];
 
   const RING_CONFIGS = [
-    { type: 'ring', radius: RING_AVG_RADIUS + 0.3, tube: 0.1, opacity: 0.4, speed: 0.5, phase: 0 },
-    { type: 'ring', radius: RING_AVG_RADIUS + 0.5, tube: 0.1, opacity: 0.25, speed: 0.7, phase: 1.0 },
-    { type: 'ring', radius: RING_AVG_RADIUS + 0.7, tube: 0.1, opacity: 0.15, speed: 0.3, phase: 2.0 }
+    { type: 'ring', radius: RING_AVG_RADIUS + 0.3, tube: 0.09, opacity: 0.4, speed: 0.5, phase: 0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 0.5, tube: 0.07, opacity: 0.25, speed: 0.7, phase: 1.0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 0.6, tube: 0.05, opacity: 0.15, speed: 0.3, phase: 2.0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 0.7, tube: 0.035, opacity: 0.15, speed: 0.3, phase: 2.0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 0.8, tube: 0.025, opacity: 0.15, speed: 0.3, phase: 2.0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 0.9, tube: 0.018, opacity: 0.15, speed: 0.3, phase: 2.0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 1.0, tube: 0.012, opacity: 0.15, speed: 0.3, phase: 2.0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 1.1, tube: 0.008, opacity: 0.15, speed: 0.3, phase: 2.0 },
+    { type: 'ring', radius: RING_AVG_RADIUS + 1.2, tube: 0.005, opacity: 0.15, speed: 0.3, phase: 2.0 },
   ];
 
   // Create 6 ring systems at different angles (360° / 6 = 60° apart)
@@ -148,7 +163,7 @@ export default function GlowCore({
   const ringGroupRefs = useRef([]);
 
   // Animation loop - updates time uniform for the sphere glow and rotates rings
-  useFrame((state) => {
+  useFrame((state, delta) => {
     // Update sphere glow
     if (sphereRef.current && sphereRef.current.material.uniforms) {
       sphereRef.current.material.uniforms.time.value = state.clock.elapsedTime;
@@ -157,34 +172,28 @@ export default function GlowCore({
     // Rotate each ring system on different axes and directions
     ringGroupRefs.current.forEach((ref, index) => {
       if (ref) {
-        // Different rotation axes and directions for each ring system
-        const rotationSpeed = 0.2 + (index * 0.1); // Varies from 0.2 to 0.7
+        const rotationSpeed = (ROTATION_SPEED + (index * 0.1)) * delta;
         const direction = index % 2 === 0 ? 1 : -1;
 
-        // Rotate on different axes based on index
+        // Create a small incremental rotation for this frame
+        const q = new THREE.Quaternion();
+        const axis = new THREE.Vector3();
+        let angle = rotationSpeed * direction;
+
+        // Determine axis based on index
         switch (index) {
-          case 0: // X-axis rotation
-            ref.rotation.x = state.clock.elapsedTime * rotationSpeed * direction;
-            break;
-          case 1: // Y-axis rotation
-            ref.rotation.y = state.clock.elapsedTime * rotationSpeed * direction;
-            break;
-          case 2: // Z-axis rotation
-            ref.rotation.z = state.clock.elapsedTime * rotationSpeed * direction;
-            break;
-          case 3: // X and Y combined
-            ref.rotation.x = state.clock.elapsedTime * rotationSpeed * direction;
-            ref.rotation.y = state.clock.elapsedTime * rotationSpeed * 0.5 * direction;
-            break;
-          case 4: // Y and Z combined
-            ref.rotation.y = state.clock.elapsedTime * rotationSpeed * direction;
-            ref.rotation.z = state.clock.elapsedTime * rotationSpeed * 0.7 * direction;
-            break;
-          case 5: // X and Z combined
-            ref.rotation.x = state.clock.elapsedTime * rotationSpeed * 0.6 * direction;
-            ref.rotation.z = state.clock.elapsedTime * rotationSpeed * direction;
-            break;
+          case 0: axis.set(1, 0, 0); break; // X-axis
+          case 1: axis.set(0, 1, 0); break; // Y-axis
+          case 2: axis.set(0, 0, 1); break; // Z-axis
+          case 3: axis.set(1, 0.5, 0).normalize(); break; // X and Y
+          case 4: axis.set(0, 1, 0.7).normalize(); break; // Y and Z
+          case 5: axis.set(0.6, 0, 1).normalize(); break; // X and Z
         }
+
+        q.setFromAxisAngle(axis, angle);
+
+        // Apply the incremental rotation to the existing quaternion
+        ref.quaternion.premultiply(q);
       }
     });
   });
@@ -207,6 +216,9 @@ export default function GlowCore({
           blending={THREE.AdditiveBlending}
         />
       </mesh>
+
+      {/* New Inner Core with Wavy Shader */}
+      <InnerCore radius={sphereRadius} />
 
       {/* Multiple Saturn Ring Systems at Different Angles */}
       {RING_ROTATIONS.map((rotation, index) => (
