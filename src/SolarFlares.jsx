@@ -1,7 +1,7 @@
 
-import React, { useRef, useState, useMemo, useEffect } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Color, Vector3, Quaternion } from 'three';
 import { createNoise3D } from 'simplex-noise';
 
 const noise3D = createNoise3D();
@@ -45,8 +45,8 @@ const getPlasmaShader = ({
     opacity = 1.0,
     speed = 0.5,
     noiseScale = 1.0,
-    color1 = new THREE.Color('#ff3c00'),
-    color2 = new THREE.Color('#ffdc00'),
+    color1 = new Color('#ff3c00'),
+    color2 = new Color('#ffdc00'),
 }) => ({
     uniforms: {
         time: { value: 0 },
@@ -142,12 +142,12 @@ const getPlasmaShader = ({
 
 
 const generateFlareCurve = (startPoint, endPoint, archHeight, segments, noiseScale, noiseStrength) => {
-    const line = new THREE.Vector3().subVectors(endPoint, startPoint);
+    const line = new Vector3().subVectors(endPoint, startPoint);
     const length = line.length();
 
     // Create intermediate points
-    const point1 = new THREE.Vector3().copy(startPoint).add(line.clone().multiplyScalar(0.33));
-    const point2 = new THREE.Vector3().copy(startPoint).add(line.clone().multiplyScalar(0.66));
+    const point1 = new Vector3().copy(startPoint).add(line.clone().multiplyScalar(0.33));
+    const point2 = new Vector3().copy(startPoint).add(line.clone().multiplyScalar(0.66));
 
     // Get radial direction for displacement
     const radial1 = point1.clone().normalize();
@@ -155,10 +155,10 @@ const generateFlareCurve = (startPoint, endPoint, archHeight, segments, noiseSca
 
     // Get a sideways direction
     const tangent = line.clone().normalize();
-    const normal = new THREE.Vector3().crossVectors(tangent, radial1).normalize();
+    const normal = new Vector3().crossVectors(tangent, radial1).normalize();
     if (normal.lengthSq() === 0) {
         // Handle cases where tangent and radial are parallel by creating a random normal
-        const randomVec = new THREE.Vector3(Math.random(), Math.random(), Math.random()).normalize();
+        const randomVec = new Vector3(Math.random(), Math.random(), Math.random()).normalize();
         normal.crossVectors(tangent, randomVec).normalize();
     }
 
@@ -174,7 +174,7 @@ const generateFlareCurve = (startPoint, endPoint, archHeight, segments, noiseSca
     point2.add(radial2.multiplyScalar(displacement2));
     point2.add(normal.clone().multiplyScalar(-sideways)); // opposite direction for an S-curve
 
-    const curve = new THREE.CatmullRomCurve3([
+    const curve = new CatmullRomCurve3([
         startPoint,
         point1,
         point2,
@@ -185,14 +185,14 @@ const generateFlareCurve = (startPoint, endPoint, archHeight, segments, noiseSca
 
     for (let i = 0; i < points.length; i++) {
         const noiseVal = noise3D(points[i].x * noiseScale, points[i].y * noiseScale, points[i].z * noiseScale);
-        points[i].add(new THREE.Vector3(
+        points[i].add(new Vector3(
             noiseVal * noiseStrength,
             noiseVal * noiseStrength,
             noiseVal * noiseStrength
         ));
     }
 
-    return new THREE.CatmullRomCurve3(points);
+    return new CatmullRomCurve3(points);
 };
 
 const generateFlareConfig = (eruptionRadius) => {
@@ -206,13 +206,13 @@ const generateFlareConfig = (eruptionRadius) => {
     const startAngle = Math.random() * Math.PI * 2;
     const endAngle = startAngle + (Math.random() - 0.5) * FLARE_CONFIG.ANGLE_SPAN;
 
-    const startPoint = new THREE.Vector3(
+    const startPoint = new Vector3(
         Math.cos(startAngle) * eruptionRadius,
         (Math.random() - 0.5) * eruptionRadius * 0.5,
         Math.sin(startAngle) * eruptionRadius
     );
 
-    const endPoint = new THREE.Vector3(
+    const endPoint = new Vector3(
         Math.cos(endAngle) * eruptionRadius,
         (Math.random() - 0.5) * eruptionRadius * 0.5,
         Math.sin(endAngle) * eruptionRadius
@@ -226,25 +226,25 @@ function Flare({ eruptionRadius, rotationSpeedMax }) {
     const state = useRef({
         config: generateFlareConfig(eruptionRadius),
         age: 0,
-        rotationAxis: new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize(),
+        rotationAxis: new Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize(),
         rotationSpeed: Math.random() * rotationSpeedMax,
     });
 
     const [geometry, setGeometry] = useState(() => {
         const { startPoint, endPoint, archHeight, tubeRadius, noiseScale, noiseStrength } = state.current.config;
         const curve = generateFlareCurve(startPoint, endPoint, archHeight, 64, noiseScale, noiseStrength);
-        return new THREE.TubeGeometry(curve, 64, tubeRadius, 8, false);
+        return new TubeGeometry(curve, 64, tubeRadius, 8, false);
     });
 
     const material = useMemo(() => {
-        return new THREE.ShaderMaterial({
+        return new ShaderMaterial({
             ...getPlasmaShader({
                 speed: state.current.config.speed,
                 noiseScale: state.current.config.noiseScale,
             }),
             transparent: true,
             depthWrite: false,
-            blending: THREE.AdditiveBlending,
+            blending: AdditiveBlending,
         });
     }, [state.current.config.speed, state.current.config.noiseScale]);
 
@@ -259,7 +259,7 @@ function Flare({ eruptionRadius, rotationSpeedMax }) {
             state.current.config.noiseScale, state.current.config.noiseStrength
         );
 
-        const newGeometry = new THREE.TubeGeometry(newCurve, 64, state.current.config.tubeRadius, 8, false);
+        const newGeometry = new TubeGeometry(newCurve, 64, state.current.config.tubeRadius, 8, false);
         setGeometry(oldGeometry => {
             oldGeometry.dispose();
             return newGeometry;
@@ -281,7 +281,7 @@ function Flare({ eruptionRadius, rotationSpeedMax }) {
         material.uniforms.opacity.value = Math.sin(lifeProgress * Math.PI);
 
         if (meshRef.current) {
-            const q = new THREE.Quaternion().setFromAxisAngle(state.current.rotationAxis, delta * state.current.rotationSpeed);
+            const q = new Quaternion().setFromAxisAngle(state.current.rotationAxis, delta * state.current.rotationSpeed);
             meshRef.current.quaternion.premultiply(q);
         }
     });

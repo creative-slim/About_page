@@ -1,15 +1,15 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { DoubleSide, Vector3 } from 'three';
 
 const getWavyShader = () => {
-    return {
-        uniforms: {
-            time: { value: 0 },
-            uScale: { value: new THREE.Vector3(1.5, 1.5, 1.5) },
-            uSpeed: { value: 0.1 },
-        },
-        vertexShader: `
+  return {
+    uniforms: {
+      time: { value: 0 },
+      uScale: { value: new Vector3(1.5, 1.5, 1.5) },
+      uSpeed: { value: 0.1 },
+    },
+    vertexShader: `
       varying vec3 vNormal;
       varying vec3 vLocalPosition;
       
@@ -19,7 +19,7 @@ const getWavyShader = () => {
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
-        fragmentShader: `
+    fragmentShader: `
       // Classic Perlin 3D Noise 
       // by Stefan Gustavson
       //
@@ -122,31 +122,31 @@ const getWavyShader = () => {
         gl_FragColor = vec4(finalColor, 1.0);
       }
     `,
-    };
+  };
 };
 
 export default function InnerCore({
-    radius = 0.25,
-    position = [0, 0, 0],
-    scale = [1, 1, 1]
+  radius = 0.25,
+  position = [0, 0, 0],
+  scale = [1, 1, 1]
 }) {
-    const shaderRef = useRef();
+  const shaderRef = useRef();
 
-    useFrame((state) => {
-        if (shaderRef.current) {
-            shaderRef.current.uniforms.time.value = state.clock.elapsedTime;
-        }
-    });
+  useFrame((state) => {
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.time.value = state.clock.elapsedTime;
+    }
+  });
 
-    return (
-        <mesh position={position} scale={scale}>
-            <sphereGeometry args={[radius, 64, 64]} />
-            <shaderMaterial
-                ref={shaderRef}
-                attach="material"
-                args={[getWavyShader()]}
-                side={THREE.DoubleSide}
-            />
-        </mesh>
-    );
+  return (
+    <mesh position={position} scale={scale}>
+      <sphereGeometry args={[radius, 64, 64]} />
+      <shaderMaterial
+        ref={shaderRef}
+        attach="material"
+        args={[getWavyShader()]}
+        side={DoubleSide}
+      />
+    </mesh>
+  );
 } 

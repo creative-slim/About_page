@@ -9,16 +9,107 @@
   <script>
     window.devicePixelRatio = 1
   </script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #text-1,
+    #text-2,
+    #text-3,
+    #text-4,
+    #text-5,
+    #text-6,
+    #text-7 {
+      color: #fff;
+      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: center;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    section {
+      height: 100vh;
+    }
+
+    #sections-wrapper {
+      position: relative;
+      z-index: 10;
+      pointer-events: none;
+    }
+  </style>
 </head>
 
 <body>
   <div id="about-page-wrapper" style="position: relative; height: 1000vh">
     <div id="about-root-threed" style="position: sticky; top: 0; height: 100vh"></div>
-    <div style="background-color: aquamarine" id="text-1"></div>
-    <div style="background-color: lightcoral" id="text-2"></div>
-
-    <div style="background-color: lightblue" id="text-3"></div>
-    <div style="background-color: lightgreen" id="text-4"></div>
+    <div id="sections-wrapper" style="position: relative; z-index: 10;">
+      <section id="section-1">
+        <div id="text-1">
+          <h1>About</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </div>
+      </section>
+      <section id="section-2">
+        <div id="text-2">
+          <h1>About</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </div>
+      </section>
+      <section id="section-3">
+        <div id="text-3">
+          <h1>About</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </div>
+      </section>
+      <section id="section-4">
+        <div id="text-4">
+          <h1>About</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </div>
+      </section>
+      <section id="section-5">
+        <div id="text-5">
+          <h1>About</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </div>
+      </section>
+      <section id="section-6">
+        <div id="text-6">
+          <h1>About</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </div>
+      </section>
+      <section id="section-7">
+        <div id="text-7">
+          <h1>About</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          </p>
+        </div>
+      </section>
+    </div>
   </div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

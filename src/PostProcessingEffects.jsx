@@ -1,14 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import {
     Bloom,
     EffectComposer,
     Noise,
     ChromaticAberration,
-    Glitch,
+    // Glitch,
 } from '@react-three/postprocessing';
 import { Vector2, Vector3 } from 'three';
-import { GlitchMode } from 'postprocessing';
 
 
 const PostProcessingEffects = () => {

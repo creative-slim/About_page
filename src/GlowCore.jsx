@@ -41,9 +41,9 @@
  * @props {Array} [props.rotation=[0,0,0]] - Rotation of the entire component
  */
 
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { AdditiveBlending, Color, DoubleSide, Quaternion, Vector3 } from 'three';
 import SaturnRing from './SaturnRing';
 import InnerCore from './InnerCore';
 
@@ -67,7 +67,7 @@ const getGlowShader = (color = "#4a90e2", intensity = 1.5) => {
   return {
     uniforms: {
       time: { value: 0 },
-      color: { value: new THREE.Color(r, g, b) },
+      color: { value: new Color(r, g, b) },
       intensity: { value: intensity }
     },
     vertexShader: `
@@ -176,8 +176,8 @@ export default function GlowCore({
         const direction = index % 2 === 0 ? 1 : -1;
 
         // Create a small incremental rotation for this frame
-        const q = new THREE.Quaternion();
-        const axis = new THREE.Vector3();
+        const q = new Quaternion();
+        const axis = new Vector3();
         let angle = rotationSpeed * direction;
 
         // Determine axis based on index
@@ -211,9 +211,9 @@ export default function GlowCore({
           attach="material"
           args={[getGlowShader(sphereColor, sphereIntensity)]}
           transparent
-          side={THREE.DoubleSide}
+          side={DoubleSide}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={AdditiveBlending}
         />
       </mesh>
 

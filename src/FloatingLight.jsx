@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
-import { useHelper } from '@react-three/drei';
-import { PointLightHelper } from 'three';
+import { useRef } from 'react';
+// import { useHelper } from '@react-three/drei';
+// import { PointLightHelper } from 'three';
 import { useFrame } from '@react-three/fiber';
 
 /**
@@ -10,8 +10,8 @@ import { useFrame } from '@react-three/fiber';
  * @param {object} props - Props to pass to the PointLight (e.g., position, intensity, color)
  */
 export default function FloatingLight(props) {
-    const lightRef = React.useRef();
-    const lightRef2 = React.useRef();
+    const lightRef = useRef();
+    const lightRef2 = useRef();
 
     // useHelper(lightRef, PointLightHelper, 0.2, 'red');
     // useHelper(lightRef2, PointLightHelper, 0.2, 'blue');

@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import React, { useState } from "react";
+import { useState } from "react";
 import { CameraControls, OrbitControls, Sparkles, Stars } from "@react-three/drei";
 // import { NodeToyMaterial, NodeToyTick } from "@nodetoy/react-nodetoy";
 import { data } from "./shaderData.ts";
@@ -11,13 +11,14 @@ import { Tunnel } from "./Core_values.jsx";
 import CameraDebug from "./CameraDebug.jsx";
 import { useThree } from "@react-three/fiber";
 import CameraAnimator from "./CameraAnimator.jsx";
-import { AnimatedMoon } from "./AnimatedMoon.jsx";
-import SolarFlares from "./SolarFlares.jsx";
+// import { AnimatedMoon } from "./AnimatedMoon.jsx";
+// import SolarFlares from "./SolarFlares.jsx";
 import { Planets } from "./Planets.jsx";
 import { HeaderText } from "./ABOUT.jsx";
-import { Terrain } from "./About_terrain_1.jsx";
+import { Terrain } from "./About_terrain.jsx";
 import FloatingLight from "./FloatingLight.jsx";
 import TunnelSpotlight from "./TunnelSpotlight.jsx";
+import AnimatedStars from "./AnimatedStars.jsx";
 
 const PLANE_HEIGHT = 41;
 
@@ -34,12 +35,12 @@ export default function App() {
   const initialPosition = [17.3628835502475, 36.758520371048945, 17.037901901535783];
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      <CameraDebug camera={camera} />
+      {/* <CameraDebug camera={camera} /> */}
       <Canvas
         gl={{ alpha: true }}
         camera={{ fov: 45, near: 0.1, far: 1000, position: initialPosition }}
       >
-        <Perf />
+        {/* <Perf /> */}
         <Scene setCamera={setCamera} />
         {/* <color attach="background" args={["#000000"]} /> */}
         {/* <ambientLight intensity={0.5} /> */}
@@ -61,7 +62,16 @@ export default function App() {
           // color="white"
           noise={5}
         />
-        <Stars />
+        <AnimatedStars
+          radius={200}
+          depth={50}
+          count={5000}
+          factor={10}
+          saturation={0}
+          fade
+          speed={0.01}
+          size={1}
+        />
         <TunnelSpotlight position={[0, 37, 0]} />
 
         /**START terrain */
@@ -72,7 +82,7 @@ export default function App() {
         /**END terrain */
 
         /**START planets */
-        <Planets position={[0, -70, 0]} />
+        <Planets position={[0, -100, 0]} />
         /**END planets */
 
         {/* <NodeToyTick /> */}
@@ -111,7 +121,6 @@ export default function App() {
 
 
         <CameraAnimator camera={camera} />
-
 
         {/* <CameraDebug /> */}
 

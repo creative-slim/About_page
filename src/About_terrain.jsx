@@ -4,12 +4,15 @@ Command: npx gltfjsx@6.5.3 ./public/About_terrain_1.glb --transform
 Files: ./public/About_terrain_1.glb [989.2KB] > /Users/slim-cd/Documents/_Projects/__Creative Directors Website/website 2025/About_page/About_terrain_1-transformed.glb [111.18KB] (89%)
 */
 
-import React from 'react'
 import { useGLTF, useTexture } from '@react-three/drei'
 
+const host_url = "https://files.creative-directors.com/creative-website/creative25/about_page"
+const url_terrain = host_url + '/models/About_terrain-transformed.glb'
+const url_terrain_texture = host_url + '/textures/Terrain_Material.webp'
+
 export function Terrain(props) {
-  const { nodes } = useGLTF('/About_terrain_1-transformed.glb')
-  const terrainTexture = useTexture('/Terrain_Material.png')
+  const { nodes } = useGLTF(url_terrain)
+  const terrainTexture = useTexture(url_terrain_texture)
   terrainTexture.flipY = false
 
   return (
@@ -21,5 +24,5 @@ export function Terrain(props) {
   )
 }
 
-useGLTF.preload('/About_terrain_1-transformed.glb')
-useTexture.preload('/Terrain_Material.png')
+useGLTF.preload(url_terrain)
+useTexture.preload(url_terrain_texture)

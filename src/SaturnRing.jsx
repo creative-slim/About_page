@@ -100,9 +100,9 @@
  * - Outer torus: radius 0.62, tube 0.012, opacity 0.2, speed 0.3
  */
 
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { DoubleSide, AdditiveBlending } from 'three';
 
 /**
  * Creates a custom GLSL shader for animated rainbow gradient effects
@@ -202,9 +202,9 @@ export default function SaturnRing({
                                 attach="material"
                                 args={[getGradientShader(cfg.opacity, cfg.speed, cfg.phase)]}
                                 transparent
-                                side={THREE.DoubleSide}  // Render both sides
+                                side={DoubleSide}  // Render both sides
                                 depthWrite={false}       // Allow transparency blending
-                                blending={THREE.AdditiveBlending}  // Glowing effect
+                                blending={AdditiveBlending}  // Glowing effect
                             />
                         </mesh>
                     );
@@ -223,9 +223,9 @@ export default function SaturnRing({
                                 attach="material"
                                 args={[getGradientShader(cfg.opacity, cfg.speed, cfg.phase)]}
                                 transparent
-                                side={THREE.DoubleSide}  // Render both sides
+                                side={DoubleSide}  // Render both sides
                                 depthWrite={false}       // Allow transparency blending
-                                blending={THREE.AdditiveBlending}  // Glowing effect
+                                blending={AdditiveBlending}  // Glowing effect
                             />
                         </mesh>
                     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Observer } from 'gsap/Observer';
 import { Quaternion, Euler } from 'three';

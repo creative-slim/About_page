@@ -1,31 +1,19 @@
-import React, { useRef, useMemo } from 'react'
+import { useRef, useMemo } from 'react'
 import { useGLTF, useTexture, useHelper } from '@react-three/drei'
-import * as THREE from 'three'
+import { Vector3, FrontSide } from 'three'
 import { useFrame } from '@react-three/fiber'
 
-// const url = '/Core_Values_final_uv2-transformed.glb'
-const url = '/tunnel_2-transformed.glb'
+const host_url = "https://files.creative-directors.com/creative-website/creative25/about_page"
+const url = host_url + '/models/tunnel-transformed.glb'
 
 export function Tunnel(props) {
-  // Commenting out the unused GLTF load
-  // const { nodes } = useGLTF('/Core_values_smaller-transformed.glb')
 
-  // Load both the color and displacement textures
-  const colorMapUrl = '/Terrain_Material_tube.png'
-  // const colorMapUrl = "microbialTenements_COLOR.jpg"
-  // const displacementMapUrl = '/microbialTenements_DISP.jpg'
-
-  let colorMap = null
-
-  colorMap = useTexture(colorMapUrl)
-  // colorMap.wrapS = colorMap.wrapT = THREE.RepeatWrapping
-  // colorMap.repeat.set(1, 1)
 
   const { nodes, materials } = useGLTF(url)
 
   const light = useRef()
   const tetrahedronRef = useRef()
-  const rotationDirection = useRef(new THREE.Vector3(
+  const rotationDirection = useRef(new Vector3(
     (Math.random() - 0.5) * 0.02,
     (Math.random() - 0.5) * 0.02,
     (Math.random() - 0.5) * 0.02
@@ -35,7 +23,7 @@ export function Tunnel(props) {
 
   const modifiedMaterials = useMemo(() => {
 
-    material.side = THREE.FrontSide
+    material.side = FrontSide
     material.metalness = 0.8
     material.roughness = 0.2
     return material
@@ -87,16 +75,7 @@ export function Tunnel(props) {
         scale={9.58}
         material={modifiedMaterials}
       />
-      {/* <meshPhysicalMaterial
-          metalness={0.5}
-          roughness={1}
-          // wireframe
-          map={colorMap}
-          side={THREE.FrontSide}
-        />
-      </mesh> */}
 
-      {/* <ambientLight intensity={5} /> */}
     </group>
   )
 }

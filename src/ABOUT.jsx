@@ -4,16 +4,19 @@ Command: npx gltfjsx@6.5.3 ./public/ABOUT.glb --transform
 Files: ./public/ABOUT.glb [1.14MB] > /Users/slim-cd/Documents/_Projects/__Creative Directors Website/website 2025/About_page/ABOUT-transformed.glb [84.86KB] (93%)
 */
 
-import React, { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { Center, useGLTF, useHelper } from '@react-three/drei'
-import { PointLightHelper, SpotLightHelper } from 'three'
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
+// import { PointLightHelper, SpotLightHelper } from 'three'
+// import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 import { useFrame } from '@react-three/fiber'
 
+const host_url = "https://files.creative-directors.com/creative-website/creative25/about_page"
+const url = host_url + '/models/about-header-transformed.glb'
+
 export function HeaderText(props) {
-  const { nodes, materials } = useGLTF('/ABOUT-transformed.glb')
+  const { nodes, materials } = useGLTF(url)
   const pointLightRef = useRef()
-  const spotLightRef = useRef()
+  // const spotLightRef = useRef()
   const centerRef = useRef()
   const rectAreaLightRef = useRef()
   // useHelper(spotLightRef, SpotLightHelper, 'blue')
@@ -52,12 +55,7 @@ export function HeaderText(props) {
         <pointLight ref={pointLightRef} position={[0, -0.5, 2]} intensity={1}
           distance={5}
         />
-        {/* <spotLight ref={spotLightRef} position={[0, 2, 5]} intensity={30}
-          distance={7}
-          angle={Math.PI / 2}
-        // penumbra={0.1}
 
-        /> */}
         <rectAreaLight ref={rectAreaLightRef} position={[0, 2, 7]} intensity={10}
           width={20}
           height={2}
@@ -68,4 +66,4 @@ export function HeaderText(props) {
   )
 }
 
-useGLTF.preload('/ABOUT-transformed.glb')
+useGLTF.preload(url)

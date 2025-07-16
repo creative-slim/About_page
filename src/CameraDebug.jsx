@@ -1,4 +1,3 @@
-import React from 'react';
 
 const CameraDebug = ({ camera }) => {
     const logCameraPosition = () => {
