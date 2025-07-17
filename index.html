@@ -41,6 +41,13 @@
       height: 100vh;
     }
 
+    /* 
+      Each section gets a background color with 0.2 opacity.
+      Uses nth-of-type to assign a different color to each section.
+      Colors chosen for visual distinction and accessibility.
+    */
+
+
     #sections-wrapper {
       position: relative;
       z-index: 10;
@@ -50,63 +57,84 @@
 </head>
 
 <body>
-  <div id="about-page-wrapper" style="position: relative; height: 1000vh">
-    <div id="about-root-threed" style="position: sticky; top: 0; height: 100vh"></div>
-    <div id="sections-wrapper" style="position: relative; z-index: 10;">
-      <section id="section-1">
-        <div id="text-1">
-          <h1>About</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-          </p>
+  <div id="about-page-wrapper" style="position: relative;">
+    <div id="about-root-threed" style="position: fixed; top: 0; height: 100vh"></div>
+    <div id="sections-wrapper" class="sections-wrapper pe-none">
+      <section class="section _100-vh pe-none">
+        <div class="w-layout-blockcontainer container centered w-container">
+          <div class="about-card_bottom">
+            <h1 class="heading-large">Heading</h1>
+            <p class="paragraph-large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
+              in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+              diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae
+              risus tristique posuere.</p>
+          </div>
         </div>
       </section>
-      <section id="section-2">
-        <div id="text-2">
-          <h1>About</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-          </p>
+      <section class="section _100-vh pe-none">
+        <div class="w-layout-blockcontainer container centered w-container">
+          <div class="about-card_bottom">
+            <h1 class="heading-large">Heading</h1>
+            <p class="paragraph-large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
+              in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+              diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae
+              risus tristique posuere.</p>
+          </div>
         </div>
       </section>
-      <section id="section-3">
-        <div id="text-3">
-          <h1>About</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-          </p>
+      <section class="section _100-vh pe-none">
+        <div class="w-layout-blockcontainer container centered w-container">
+          <div class="about-card_left">
+            <h1 class="heading-large">Heading</h1>
+            <p class="paragraph-large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
+              in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+              diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae
+              risus tristique posuere.</p>
+          </div>
         </div>
       </section>
-      <section id="section-4">
-        <div id="text-4">
-          <h1>About</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-          </p>
+      <section class="section _100-vh pe-none">
+        <div class="w-layout-blockcontainer container centered w-container">
+          <div class="about-card_right">
+            <h1 class="heading-large">Heading</h1>
+            <p class="paragraph-large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
+              in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+              diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae
+              risus tristique posuere.</p>
+          </div>
         </div>
       </section>
-      <section id="section-5">
-        <div id="text-5">
-          <h1>About</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-          </p>
+      <section class="section _100-vh pe-none">
+        <div class="w-layout-blockcontainer container centered w-container">
+          <div class="about-card_right">
+            <h1 class="heading-large">Heading</h1>
+            <p class="paragraph-large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
+              in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+              diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae
+              risus tristique posuere.</p>
+          </div>
         </div>
       </section>
-      <section id="section-6">
-        <div id="text-6">
-          <h1>About</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-          </p>
+      <section class="section _100-vh pe-none">
+        <div class="w-layout-blockcontainer container centered w-container">
+          <div class="about-card_left">
+            <h1 class="heading-large">Heading</h1>
+            <p class="paragraph-large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
+              in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+              diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae
+              risus tristique posuere.</p>
+          </div>
         </div>
       </section>
-      <section id="section-7">
-        <div id="text-7">
-          <h1>About</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-          </p>
+      <section class="section _100-vh pe-none">
+        <div class="w-layout-blockcontainer container centered w-container">
+          <div class="about-card_bottom">
+            <h1 class="heading-large">Heading</h1>
+            <p class="paragraph-large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
+              in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+              diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae
+              risus tristique posuere.</p>
+          </div>
         </div>
       </section>
     </div>
